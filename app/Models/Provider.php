@@ -8,4 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Provider extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'address',
+    ];
+
+    public function pizzas()
+    {
+        return $this->hasMany(Pizza::class);
+    }
 }

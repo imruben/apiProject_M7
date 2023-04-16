@@ -14,6 +14,11 @@ return new class extends Migration
         Schema::create('providers', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('name');
+            $table->string('cif', 9)->unique();
+            $table->string('email')->unique();
+            $table->string('phone');
+            $table->string('address');
         });
     }
 

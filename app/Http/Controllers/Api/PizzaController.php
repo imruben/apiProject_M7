@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Buyer;
+use App\Models\Pizza;
 use Illuminate\Http\Request;
 
-class BuyerController extends Controller
+class PizzaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return 'pepe';
     }
 
     /**
@@ -26,7 +26,7 @@ class BuyerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Buyer $buyer)
+    public function show(Pizza $pizza)
     {
         //
     }
@@ -34,7 +34,7 @@ class BuyerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Buyer $buyer)
+    public function update(Request $request, Pizza $pizza)
     {
         //
     }
@@ -42,7 +42,7 @@ class BuyerController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Buyer $buyer)
+    public function destroy(Pizza $pizza)
     {
         //
     }
