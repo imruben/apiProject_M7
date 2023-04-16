@@ -38,9 +38,9 @@ class ProviderSeeder extends Seeder
         ]);
 
         Provider::factory()->create([
-            'name' => 'Pepe el peperonis',
+            'name' => 'El tio peperoni',
             'cif' => 'J05556493',
-            'email' => 'peperonis@pizza.com',
+            'email' => 'tiopeperonis@pizza.com',
             'phone' => fake()->phoneNumber,
             'address' => fake()->address,
         ]);
@@ -63,7 +63,7 @@ class ProviderSeeder extends Seeder
 
         Provider::factory()->create([
             'name' => 'El masas',
-            'cif' => 'C25584673',
+            'cif' => 'V24545386',
             'email' => 'elmasas@pizza.com',
             'phone' => fake()->phoneNumber,
             'address' => fake()->address,

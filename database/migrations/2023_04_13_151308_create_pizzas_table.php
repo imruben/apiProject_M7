@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->integer('amount');
             $table->double('price', 5, 2);
+            $table->foreignId('provider')->constrained();
         });
     }
 
