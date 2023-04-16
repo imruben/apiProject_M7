@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\PizzaController;
+use App\Http\Controllers\Api\PizzaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,4 +22,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::controller(PizzaController::class)->group(function () {
     Route::get('/pizzas',  'index');
+    Route::post('/pizzas', 'store');
+    Route::get('/pizzas/{id}', 'show');
+    Route::get('/pizzas/provider/{id}', 'showProvider');
+    Route::put('/pizzas', 'update');
+    Route::delete('/pizzas/{id}', 'destroy');
 });

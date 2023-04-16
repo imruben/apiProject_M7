@@ -15,7 +15,7 @@ class Pizza extends Model
         'price',
     ];
 
-    public function providers()
+    public function provider()
     {
         return $this->belongsTo(Provider::class);
     }
