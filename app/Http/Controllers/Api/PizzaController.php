@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Pizza;
 use App\Models\Provider;
 use Illuminate\Http\Request;
-use Dotenv\Validator;
 
 class PizzaController extends Controller
 {
@@ -28,9 +27,9 @@ class PizzaController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|max:255',
+            'name' => 'required|string|max:255',
             'amount' => 'required|integer|max:5000',
-            'price' => 'required|numeric|max:99.99',
+            'price' => 'required|numeric|max:199.99',
             'provider' => 'required|integer',
         ]);
 
@@ -94,17 +93,17 @@ class PizzaController extends Controller
     {
         $validated = $request->validate([
             'id' => 'required|integer',
-            'name' => 'max:255',
+            'name' => 'string|max:255',
             'amount' => 'integer|max:5000',
-            'price' => 'numeric|max:99.99',
+            'price' => 'numeric|max:199.99',
             'provider' => 'integer',
         ]);
 
-        $pizza = Pizza::find($request->id);
+        $pizza = Pizza::find($validated['id']);
 
         if (!$pizza) {
             return response([
-                'message' => 'Pizza with id ' . $request->id . ' not found',
+                'message' => 'Pizza with id ' . $validated['id'] . ' not found',
             ], 400);
         } else {
             try {
@@ -116,7 +115,7 @@ class PizzaController extends Controller
             } catch (\Exception $e) {
                 if ($e->getCode() == 23000) {
                     return response([
-                        'message' => 'Provider with id ' . $request->provider . ' not found',
+                        'message' => 'Provider with id ' . $validated['provider'] . ' not found',
                         'error' => $e->getCode(),
                     ], 400);
                 } else {
@@ -134,8 +133,17 @@ class PizzaController extends Controller
      */
     public function destroy($id)
     {
-        $pizza = Pizza::findorFail($id);
-        $pizza->delete();
-        return 'Pizza deleted';
+        $pizza = Pizza::find($id);
+
+        if (!$pizza) {
+            return response([
+                'message' => 'Pizza with id ' . $id . ' not found',
+            ], 400);
+        } else {
+            $pizza->delete();
+            return response([
+                'message' => 'Pizza with id ' . $id . ' deleted successfully',
+            ], 201);
+        }
     }
 }
