@@ -24,7 +24,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 
-Route::controller(PizzaController::class)->group(function () {
+Route::controller(PizzaController::class)->middleware('auth:api')->group(function () {
     Route::get('/pizzas',  'index');
     Route::post('/pizzas', 'store');
     Route::get('/pizzas/{id}', 'show');

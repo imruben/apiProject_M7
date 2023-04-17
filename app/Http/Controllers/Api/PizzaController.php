@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Pizza;
 use App\Models\Provider;
 use Illuminate\Http\Request;
+use Dotenv\Validator;
 
 class PizzaController extends Controller
 {
@@ -15,7 +16,10 @@ class PizzaController extends Controller
     public function index()
     {
         $pizzas = Pizza::all();
-        return $pizzas;
+        return response([
+            'message' => 'Retrieved successfully',
+            'pizzas' => $pizzas,
+        ]);
     }
 
     /**
@@ -23,14 +27,32 @@ class PizzaController extends Controller
      */
     public function store(Request $request)
     {
-        $pizza = new Pizza();
-        $pizza->name = $request->name;
-        $pizza->amount = $request->amount;
-        $pizza->price = $request->price;
-        $pizza->provider = $request->provider;
-        $pizza->save();
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'amount' => 'required|integer|max:5000',
+            'price' => 'required|numeric|max:99.99',
+            'provider' => 'required|integer',
+        ]);
 
-        return $pizza;
+        try {
+            $pizza = Pizza::create($validated);
+            return response([
+                'message' => 'Created successfully',
+                'pizza' => $pizza,
+            ], 201);
+        } catch (\Exception $e) {
+            if ($e->getCode() == 23000) {
+                return response([
+                    'message' => 'Provider with id ' . $request->provider . ' not found',
+                    'error' => $e->getCode(),
+                ], 400);
+            } else {
+                return response([
+                    'message' => 'Error SQL',
+                    'error' => $e->getCode(),
+                ], 400);
+            }
+        }
     }
 
     /**
@@ -39,7 +61,13 @@ class PizzaController extends Controller
     public function show($id)
     {
         $pizza = Pizza::find($id);
-        return $pizza;
+
+        if (!$pizza) return 'Pizza with id ' . $id . ' not found';
+
+        return response([
+            'message' => 'Retrieved successfully',
+            'pizza' => $pizza,
+        ], 201);
     }
 
     /**
@@ -48,8 +76,15 @@ class PizzaController extends Controller
     public function showProvider($id)
     {
         $pizza = Pizza::find($id);
+        if (!$pizza) return 'Pizza with id ' . $id . ' not found';
+
         $provider = Provider::find($pizza->provider);
-        return $provider;
+        if (!$provider) return 'Pizza with id ' . $pizza->provider . ' not found';
+
+        return response([
+            'message' => 'Retrieved successfully',
+            'provider' => $provider,
+        ], 201);
     }
 
     /**
@@ -57,15 +92,41 @@ class PizzaController extends Controller
      */
     public function update(Request $request)
     {
-        $pizza = Pizza::findorFail($request->id);
+        $validated = $request->validate([
+            'id' => 'required|integer',
+            'name' => 'max:255',
+            'amount' => 'integer|max:5000',
+            'price' => 'numeric|max:99.99',
+            'provider' => 'integer',
+        ]);
 
-        $pizza->name = $request->name;
-        $pizza->amount = $request->amount;
-        $pizza->price = $request->price;
-        $pizza->provider = $request->provider;
+        $pizza = Pizza::find($request->id);
 
-        $pizza->update();
-        return $pizza;
+        if (!$pizza) {
+            return response([
+                'message' => 'Pizza with id ' . $request->id . ' not found',
+            ], 400);
+        } else {
+            try {
+                $pizza->update($validated);
+                return response([
+                    'message' => 'Updated successfully',
+                    'pizza' => $pizza,
+                ], 201);
+            } catch (\Exception $e) {
+                if ($e->getCode() == 23000) {
+                    return response([
+                        'message' => 'Provider with id ' . $request->provider . ' not found',
+                        'error' => $e->getCode(),
+                    ], 400);
+                } else {
+                    return response([
+                        'message' => 'Error SQL',
+                        'error' => $e->getCode(),
+                    ], 400);
+                }
+            }
+        }
     }
 
     /**

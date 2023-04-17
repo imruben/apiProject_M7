@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('pizzas', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('name');
-            $table->integer('amount');
+            $table->string('name', 255);
+            $table->integer('amount', 5000);
             $table->double('price', 5, 2);
             $table->foreignId('provider')->constrained();
         });

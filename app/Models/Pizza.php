@@ -13,6 +13,7 @@ class Pizza extends Model
         'name',
         'amount',
         'price',
+        'provider'
     ];
 
     public function provider()
