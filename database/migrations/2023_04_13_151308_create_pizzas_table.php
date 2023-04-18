@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name', 255);
-            $table->integer('amount', 5000);
+            // $table->integer('amount', 5000);
+            $table->integer('amount');
             $table->double('price', 5, 2);
             $table->foreignId('provider')->constrained();
         });

@@ -26,12 +26,19 @@ class PizzaController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'amount' => 'required|integer|max:5000',
-            'price' => 'required|numeric|max:199.99',
-            'provider' => 'required|integer',
-        ]);
+        try {
+            $validated = $request->validate([
+                'id' => 'integer',
+                'name' => 'required|string|max:255',
+                'amount' => 'required|integer|max:5000',
+                'price' => 'required|numeric|max:199.99',
+                'provider' => 'required|integer',
+            ]);
+        } catch (\Exception $e) {
+            return response([
+                'message' => 'Error en los datos de entrada'
+            ], 400);
+        }
 
         try {
             $pizza = Pizza::create($validated);
@@ -43,7 +50,6 @@ class PizzaController extends Controller
             if ($e->getCode() == 23000) {
                 return response([
                     'message' => 'Provider with id ' . $request->provider . ' not found',
-                    'error' => $e->getCode(),
                 ], 400);
             } else {
                 return response([
@@ -61,7 +67,9 @@ class PizzaController extends Controller
     {
         $pizza = Pizza::find($id);
 
-        if (!$pizza) return 'Pizza with id ' . $id . ' not found';
+        if (!$pizza) return response([
+            'message' => 'Pizza with id ' . $id . ' not found',
+        ], 400);
 
         return response([
             'message' => 'Retrieved successfully',
@@ -75,7 +83,10 @@ class PizzaController extends Controller
     public function showProvider($id)
     {
         $pizza = Pizza::find($id);
-        if (!$pizza) return 'Pizza with id ' . $id . ' not found';
+
+        if (!$pizza) return response([
+            'message' => 'Pizza with id ' . $id . ' not found',
+        ], 400);
 
         $provider = Provider::find($pizza->provider);
         if (!$provider) return 'Pizza with id ' . $pizza->provider . ' not found';
@@ -91,13 +102,19 @@ class PizzaController extends Controller
      */
     public function update(Request $request)
     {
-        $validated = $request->validate([
-            'id' => 'required|integer',
-            'name' => 'string|max:255',
-            'amount' => 'integer|max:5000',
-            'price' => 'numeric|max:199.99',
-            'provider' => 'integer',
-        ]);
+        try {
+            $validated = $request->validate([
+                'id' => 'required|integer',
+                'name' => 'string|max:255',
+                'amount' => 'integer|max:5000',
+                'price' => 'numeric|max:199.99',
+                'provider' => 'integer',
+            ]);
+        } catch (\Exception $e) {
+            return response([
+                'message' => 'Error en los datos de entrada'
+            ], 400);
+        }
 
         $pizza = Pizza::find($validated['id']);
 
@@ -115,8 +132,7 @@ class PizzaController extends Controller
             } catch (\Exception $e) {
                 if ($e->getCode() == 23000) {
                     return response([
-                        'message' => 'Provider with id ' . $validated['provider'] . ' not found',
-                        'error' => $e->getCode(),
+                        'message' => 'Provider with id ' . $validated['provider'] . ' not found'
                     ], 400);
                 } else {
                     return response([
